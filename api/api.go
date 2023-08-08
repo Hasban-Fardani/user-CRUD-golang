@@ -7,8 +7,13 @@ import (
 	"github.com/hasban-fardani/user-CRUD-go/app"
 )
 
+var server *gin.Engine
+
+func init() {
+	server = gin.Default()
+}
+
 func Handler(w http.ResponseWriter, r *http.Request) {
-	server := gin.Default()
 	app.AddRouter(server)
 	server.ServeHTTP(w, r)
 }

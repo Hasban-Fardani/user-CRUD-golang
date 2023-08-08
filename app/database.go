@@ -1,9 +1,10 @@
 package app
 
 import (
+	"crypto/tls"
 	"database/sql"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 
 	"fmt"
 	"os"
@@ -24,10 +25,16 @@ func Connect() *sql.DB {
 	var err error
 
 	user := getEnv("DB_USER", "root")
+	password := getEnv("DB_PASSWORD", "")
 	host := getEnv("DB_HOST", "localhost")
 	port := getEnv("DB_PORT", "3306")
 	database := getEnv("DB_DATABASE", "user_crud_go")
-	connStr := fmt.Sprintf("%s@tcp(%s:%s)/%s", user, host, port, database)
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?tls=tidb", user, password, host, port, database)
+
+	mysql.RegisterTLSConfig("tidb", &tls.Config{
+		MinVersion: tls.VersionTLS12,
+		ServerName: "gateway01.us-west-2.prod.aws.tidbcloud.com",
+	})
 
 	db, err = sql.Open("mysql", connStr)
 	err = db.Ping()

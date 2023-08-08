@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 
+	"github.com/gin-gonic/gin"
 	"github.com/hasban-fardani/user-CRUD-go/app"
 )
 
 func main() {
 	fmt.Println("Hello World!")
 
-	// test connect database
-	app.Connect()
+	s := gin.New()
+	s.Use(gin.Logger(), gin.Recovery())
+	app.AddRouter(s)
+	s.Run("localhost:8080")
 }

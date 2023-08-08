@@ -10,7 +10,9 @@ import (
 var server *gin.Engine
 
 func init() {
+	gin.SetMode(gin.ReleaseMode)
 	server = gin.New()
+	server.Use(gin.Logger(), gin.Recovery())
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {

@@ -10,7 +10,7 @@ import (
 var server *gin.Engine
 
 func init() {
-	server = gin.Default()
+	server = gin.New()
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {

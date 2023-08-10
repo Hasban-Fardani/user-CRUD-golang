@@ -2,12 +2,20 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/hasban-fardani/user-CRUD-go/controller"
 )
 
 func AddRouter(engine *gin.Engine) {
-	engine.GET("/hello", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "Hello World",
-		})
-	})
+	db := Connect()
+	api := engine.Group("/api")
+
+	// define controller
+	userController := controller.NewUserController(db)
+	viewsController := controller.NewViewsController(engine)
+
+	// routes views
+	engine.GET("/", viewsController.Index)
+
+	// routes API
+	api.POST("/register", userController.Create)
 }

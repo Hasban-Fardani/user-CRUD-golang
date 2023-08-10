@@ -8,10 +8,13 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello World!")
+	gin.SetMode(gin.ReleaseMode)
 
 	s := gin.New()
 	s.Use(gin.Logger(), gin.Recovery())
+
 	app.AddRouter(s)
-	s.Run("localhost:8080")
+
+	fmt.Println("Server Berjalan di http://localhost:5000")
+	s.Run("localhost:5000")
 }

@@ -29,12 +29,16 @@ func Connect() *sql.DB {
 	host := getEnv("DB_HOST", "localhost")
 	port := getEnv("DB_PORT", "3306")
 	database := getEnv("DB_DATABASE", "user_crud_go")
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?tls=tidb", user, password, host, port, database)
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
 
-	mysql.RegisterTLSConfig("tidb", &tls.Config{
-		MinVersion: tls.VersionTLS12,
-		ServerName: "gateway01.us-west-2.prod.aws.tidbcloud.com",
-	})
+	useTls := getEnv("USE_TLS", "")
+	if useTls != "" {
+		mysql.RegisterTLSConfig("tidb", &tls.Config{
+			MinVersion: tls.VersionTLS12,
+			ServerName: "gateway01.us-west-2.prod.aws.tidbcloud.com",
+		})
+		connStr += "?tls=" + useTls
+	}
 
 	db, err = sql.Open("mysql", connStr)
 	err = db.Ping()
@@ -49,7 +53,12 @@ func Connect() *sql.DB {
 }
 
 func init() {
-	err := godotenv.Load()
+	var err error
+
+	if os.Getenv("PROD") != "" {
+		err = godotenv.Load(".env.prod")
+	}
+
 	if err != nil {
 		panic("Error loading.env file")
 	}

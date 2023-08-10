@@ -2,8 +2,10 @@ package controller
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hasban-fardani/user-CRUD-go/model"
 )
 
 type UserController struct {
@@ -14,8 +16,14 @@ func NewUserController(db *sql.DB) *UserController {
 	return &UserController{DB: db}
 }
 
-func (UserController) Create(c *gin.Context) {
+func (usr *UserController) Create(c *gin.Context) {
+	var data model.RequestCreateUser
 
+	if err := c.BindJSON(&data); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("bind data berhasil:")
 }
 
 func (UserController) Read(c *gin.Context) {

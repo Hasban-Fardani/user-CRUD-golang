@@ -14,7 +14,7 @@ func main() {
 	s.Use(gin.Logger(), gin.Recovery())
 
 	app.AddRouter(s)
-
+	
 	fmt.Println("Server Berjalan di http://localhost:5000")
 	s.Run("localhost:5000")
 }

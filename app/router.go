@@ -18,4 +18,6 @@ func AddRouter(engine *gin.Engine) {
 
 	// routes API
 	api.POST("/register", userController.Create)
+	api.GET("/users", userController.GetAll)
+	api.GET("/users/:id", userController.GetByID)
 }

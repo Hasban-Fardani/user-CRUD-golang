@@ -25,7 +25,7 @@ func Connect() *sql.DB {
 	var err error
 
 	user := getEnv("DB_USER", "root")
-	password := getEnv("DB_PASSWORD", "")
+	password := getEnv("DB_PASSWORD", "YOURPASSWORD")
 	host := getEnv("DB_HOST", "localhost")
 	port := getEnv("DB_PORT", "3306")
 	database := getEnv("DB_DATABASE", "user_crud_go")

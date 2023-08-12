@@ -1,5 +1,8 @@
 {
   "trailingSlash": false,
+  "builds": [
+    { "src": "views/*", "use": "@vercel/static"}
+  ],
   "rewrites":
   [
     {

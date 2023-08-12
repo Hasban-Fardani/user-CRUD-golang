@@ -20,4 +20,5 @@ func AddRouter(engine *gin.Engine) {
 	api.POST("/register", userController.Create)
 	api.GET("/users", userController.GetAll)
 	api.GET("/users/:id", userController.GetByID)
+	api.DELETE("/users/:id", userController.DeleteByID)
 }

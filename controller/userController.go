@@ -28,9 +28,8 @@ func NewUserController(db *sql.DB) *UserController {
 
 func (usr *UserController) Create(c *gin.Context) {
 	var data model.RequestCreateUser
-	var id int
 
-	id = usr.GetLastId() + 1
+	id := usr.GetLastId() + 1
 
 	if err := c.BindJSON(&data); err != nil {
 		helper.HandleErr(err, c)
@@ -71,7 +70,14 @@ func (usr *UserController) GetByID(c *gin.Context) {
 
 func (usr *UserController) GetAll(c *gin.Context) {
 	var allUsr []model.User
+	var allUsrFiltered []model.User
 	var usrTmp model.User
+	var queryParam model.UserQuery
+
+	if err := c.ShouldBindQuery(&queryParam); err != nil {
+		helper.HandleErr(err, c)
+		return
+	}
 
 	rows, err := usr.DB.Query("SELECT * FROM Users")
 
@@ -89,16 +95,41 @@ func (usr *UserController) GetAll(c *gin.Context) {
 		allUsr = append(allUsr, usrTmp)
 	}
 
+	if queryParam.Name != "" || queryParam.Email != "" {
+		for i := 0; i < len(allUsr); i++ {
+			if allUsr[i].Name == queryParam.Name {
+				allUsrFiltered = append(allUsrFiltered, allUsr[i])
+				continue
+			}
+			if allUsr[i].Email == queryParam.Email {
+				allUsrFiltered = append(allUsrFiltered, allUsr[i])
+				continue
+			}
+		}
+	} else {
+		allUsrFiltered = allUsr
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"msg":  "success",
-		"data": allUsr,
+		"data": allUsrFiltered,
 	})
 }
 
-func (UserController) Update(c *gin.Context) {
+func (usr *UserController) Update(c *gin.Context) {
 
 }
 
-func (UserController) Delete(c *gin.Context) {
+func (usr *UserController) DeleteByID(c *gin.Context) {
+	id := c.Param("id")
 
+	_, err := usr.DB.Exec("DELETE FROM Users where id=?", id)
+	if err != nil {
+		helper.HandleErr(err, c)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "succes",
+		"id":  id,
+	})
 }

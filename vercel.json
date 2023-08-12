@@ -1,13 +1,14 @@
 {
   "trailingSlash": false,
-  "builds": [
-    { "src": "views/*", "use": "@vercel/static"}
-  ],
   "rewrites":
   [
     {
       "source": "/(.*)",
       "destination": "/api/entrypoint.go"
+    },
+    {
+      "source": "views/*",
+      "destination": "/views/*"
     }
   ]
 }

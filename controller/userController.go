@@ -26,6 +26,9 @@ func NewUserController(db *sql.DB) *UserController {
 	return &UserController{DB: db}
 }
 
+// method: UserController.Create
+// params: -
+// desc  : create a new user record to database
 func (controller *UserController) Create(c *gin.Context) {
 	var data model.RequestCreateUser
 
@@ -50,6 +53,9 @@ func (controller *UserController) Create(c *gin.Context) {
 	})
 }
 
+// method: UserController.GetByID
+// params: -
+// desc  : get user data by user id
 func (controller *UserController) GetByID(c *gin.Context) {
 	id := c.Param("id")
 	user := model.User{}
@@ -68,6 +74,9 @@ func (controller *UserController) GetByID(c *gin.Context) {
 	})
 }
 
+// method: UserController.Create
+// params:
+// desc  : create a new user record to database
 func (controller *UserController) GetAll(c *gin.Context) {
 	var allUsr []model.User
 	var allUsrFiltered []model.User
@@ -95,6 +104,7 @@ func (controller *UserController) GetAll(c *gin.Context) {
 		allUsr = append(allUsr, usrTmp)
 	}
 
+	// filter
 	if queryParam.Name != "" || queryParam.Email != "" {
 		for i := 0; i < len(allUsr); i++ {
 			if allUsr[i].Name == queryParam.Name {
@@ -109,6 +119,7 @@ func (controller *UserController) GetAll(c *gin.Context) {
 	} else {
 		allUsrFiltered = allUsr
 	}
+	// end filter
 
 	c.JSON(http.StatusOK, gin.H{
 		"msg":  "success",
@@ -117,9 +128,52 @@ func (controller *UserController) GetAll(c *gin.Context) {
 }
 
 func (controller *UserController) Update(c *gin.Context) {
+	var user model.User
+	var body model.User
 
+	id := c.Param("id")
+
+	res := controller.DB.QueryRow("select * from Users where id=?", id)
+	res.Scan(&user)
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		helper.HandleErr(err, c)
+		return
+	}
+
+	// start check
+	if body.Name != user.Name && body.Name != "" {
+		user.Name = body.Name
+	}
+	if body.Email != user.Email && body.Email != "" {
+		user.Email = body.Email
+	}
+	if body.Password != user.Password && body.Password != "" {
+		user.Password = body.Password
+	}
+	// end check
+
+	// update to database
+	row, err := controller.DB.Exec(
+		"UPDATE Users SET name=?, email=?, password=? WHERE id=?",
+		user.Name, user.Email, user.Password, id,
+	)
+
+	if err != nil {
+		helper.HandleErr(err, c)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"msg":    "success",
+		"usr":    user,
+		"result": row,
+	})
 }
 
+// method: UserController.Create
+// params: -
+// desc  : create a new user record to database
 func (controller *UserController) DeleteByID(c *gin.Context) {
 	id := c.Param("id")
 

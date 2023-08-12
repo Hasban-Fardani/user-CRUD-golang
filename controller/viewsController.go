@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hasban-fardani/user-CRUD-go/views"
 )
 
 type M map[string]string
@@ -12,8 +11,7 @@ type ViewsController struct {
 }
 
 func NewViewsController(engine *gin.Engine) *ViewsController {
-	views.InitViews()
-	engine.LoadHTMLGlob("views/*")
+	engine.LoadHTMLGlob("public/*")
 	return &ViewsController{}
 }
 

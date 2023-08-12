@@ -12,7 +12,8 @@ type ViewsController struct {
 }
 
 func NewViewsController(engine *gin.Engine) *ViewsController {
-	views.InitViews(engine)
+	views.InitViews()
+	engine.LoadHTMLGlob("views/*")
 	return &ViewsController{}
 }
 

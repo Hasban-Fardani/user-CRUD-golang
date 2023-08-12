@@ -1,7 +1,11 @@
 package views
 
-import "github.com/gin-gonic/gin"
+import (
+	"log"
+	"os"
+)
 
-func InitViews(engine *gin.Engine) {
-	engine.LoadHTMLGlob("/*")
+func InitViews() {
+	dir, _ := os.Getwd()
+	log.Println("dir:", dir)
 }

@@ -3,6 +3,7 @@ package app
 import (
 	"crypto/tls"
 	"database/sql"
+	"log"
 
 	"github.com/go-sql-driver/mysql"
 
@@ -44,7 +45,7 @@ func Connect() *sql.DB {
 	err = db.Ping()
 
 	if err != nil {
-		panic(err)
+		log.Fatalln(err.Error())
 	} else {
 		fmt.Println("Koneksi ke database berhasil")
 	}

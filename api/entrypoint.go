@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hasban-fardani/user-CRUD-go/app"
@@ -16,6 +18,7 @@ func init() {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	log.Println(os.Chdir("."))
 	app.AddRouter(server)
 	server.ServeHTTP(w, r)
 }

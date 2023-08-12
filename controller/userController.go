@@ -13,10 +13,10 @@ type UserController struct {
 	DB *sql.DB
 }
 
-func (usr *UserController) GetLastId() int {
+func (controller *UserController) GetLastId() int {
 	var lastId int
 
-	res := usr.DB.QueryRow("SELECT MAX(id) FROM Users;")
+	res := controller.DB.QueryRow("SELECT MAX(id) FROM Users;")
 	res.Scan(&lastId)
 
 	return lastId
@@ -26,16 +26,16 @@ func NewUserController(db *sql.DB) *UserController {
 	return &UserController{DB: db}
 }
 
-func (usr *UserController) Create(c *gin.Context) {
+func (controller *UserController) Create(c *gin.Context) {
 	var data model.RequestCreateUser
 
-	id := usr.GetLastId() + 1
+	id := controller.GetLastId() + 1
 
 	if err := c.BindJSON(&data); err != nil {
 		helper.HandleErr(err, c)
 	}
 
-	_, err := usr.DB.Exec(
+	_, err := controller.DB.Exec(
 		"INSERT INTO Users (id, name, email, password) values (?, ?, ?, ?)",
 		id, data.Name, data.Email, data.Password)
 
@@ -50,11 +50,11 @@ func (usr *UserController) Create(c *gin.Context) {
 	})
 }
 
-func (usr *UserController) GetByID(c *gin.Context) {
+func (controller *UserController) GetByID(c *gin.Context) {
 	id := c.Param("id")
 	user := model.User{}
 
-	res := usr.DB.QueryRow("SELECT * FROM Users where id=?", id)
+	res := controller.DB.QueryRow("SELECT * FROM Users where id=?", id)
 	err := res.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 
 	if err != nil {
@@ -68,7 +68,7 @@ func (usr *UserController) GetByID(c *gin.Context) {
 	})
 }
 
-func (usr *UserController) GetAll(c *gin.Context) {
+func (controller *UserController) GetAll(c *gin.Context) {
 	var allUsr []model.User
 	var allUsrFiltered []model.User
 	var usrTmp model.User
@@ -79,7 +79,7 @@ func (usr *UserController) GetAll(c *gin.Context) {
 		return
 	}
 
-	rows, err := usr.DB.Query("SELECT * FROM Users")
+	rows, err := controller.DB.Query("SELECT * FROM Users")
 
 	if err != nil {
 		helper.HandleErr(err, c)
@@ -116,14 +116,14 @@ func (usr *UserController) GetAll(c *gin.Context) {
 	})
 }
 
-func (usr *UserController) Update(c *gin.Context) {
+func (controller *UserController) Update(c *gin.Context) {
 
 }
 
-func (usr *UserController) DeleteByID(c *gin.Context) {
+func (controller *UserController) DeleteByID(c *gin.Context) {
 	id := c.Param("id")
 
-	_, err := usr.DB.Exec("DELETE FROM Users where id=?", id)
+	_, err := controller.DB.Exec("DELETE FROM Users where id=?", id)
 	if err != nil {
 		helper.HandleErr(err, c)
 	}

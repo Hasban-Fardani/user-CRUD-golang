@@ -23,7 +23,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	dir, _ := os.Getwd()
 	log.Println(dir)
 	l, _ := os.ReadDir(dir)
-	log.Println(l)
+	for _, e := range l {
+		log.Println(e.Name())
+	}
 
 	app.AddRouter(server)
 	server.ServeHTTP(w, r)

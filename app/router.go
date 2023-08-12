@@ -1,6 +1,8 @@
 package app
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/hasban-fardani/user-CRUD-go/controller"
 )
@@ -11,10 +13,14 @@ func AddRouter(engine *gin.Engine) {
 
 	// define controller
 	userController := controller.NewUserController(db)
-	viewsController := controller.NewViewsController(engine)
 
-	// routes views
-	engine.GET("/", viewsController.Index)
+	// it's not working on vervel but working on local
+	if v := os.Getenv("ON_VERCEL"); v == "" {
+		viewsController := controller.NewViewsController(engine)
+
+		// routes views
+		engine.GET("/", viewsController.Index)
+	}
 
 	// routes API
 	api.POST("/register", userController.Create)
